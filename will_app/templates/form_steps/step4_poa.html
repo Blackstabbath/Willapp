@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="step-container">
+  <h2>Step 4 — Power of Attorney</h2>
+
+  <form id="step4-form" class="step-form">
+    <!-- ========================================================= -->
+    <!-- ⚖️ GENERAL POWER OF ATTORNEY -->
+    <!-- ========================================================= -->
+    <div class="form-section">
+      <h3>⚖️ General Power of Attorney</h3>
+      <p class="info-text">This allows someone to manage your financial and property matters.</p>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="include_poa" />
+        <label for="include_poa">Include General Power of Attorney</label>
+      </div>
+
+      <div id="general-poa-fields" class="hidden fade-section">
+        <div class="auto-fill-buttons">
+          <small>Auto-fill attorney from:</small>
+          <button type="button" class="btn-auto" data-poa="1" data-source="executor1">Executor 1</button>
+          <button type="button" class="btn-auto" data-poa="1" data-source="executor2">Executor 2</button>
+        </div>
+
+        <div class="form-group"><label>Attorney Name</label>
+          <input id="poa_name_one" name="poa_name_one" oninput="this.value=this.value.toUpperCase()" />
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Relation</label><input id="poa_relation_one" name="poa_relation_one" /></div>
+          <div class="form-group"><label>Date of Birth</label><input id="poa_dob_one" name="poa_dob_one" type="date" /></div>
+        </div>
+
+        <div class="form-section">
+          <h4>🏠 Attorney Address</h4>
+          <div class="checkbox-row small">
+            <input type="checkbox" id="poa_same_address_one" />
+            <label for="poa_same_address_one">Use my address (same as applicant)</label>
+          </div>
+          <div id="poa-address-fields-one" class="fade-section">
+            <div class="form-row">
+              <div class="form-group"><label>Street Number</label><input id="poa_street_number_one" name="poa_street_number_one" /></div>
+              <div class="form-group"><label>Street Name</label><input id="poa_street_name_one" name="poa_street_name_one" /></div>
+            </div>
+            <div class="form-group"><label>City</label><input id="poa_city_one" name="poa_city_one" /></div>
+            <div class="form-row">
+              <div class="form-group"><label>Province</label><input id="poa_province_one" name="poa_province_one" value="Ontario" readonly /></div>
+              <div class="form-group"><label>Postal Code</label><input id="poa_postal_code_one" name="poa_postal_code_one" pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" title="Format A1A 1A1" /></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="second_poa" />
+          <label for="second_poa">Include Alternate Attorney</label>
+        </div>
+
+        <div id="alternate-poa-fields" class="hidden fade-section">
+          <div class="auto-fill-buttons">
+            <small>Auto-fill alternate from:</small>
+            <button type="button" class="btn-auto" data-poa="2" data-source="executor1">Executor 1</button>
+            <button type="button" class="btn-auto" data-poa="2" data-source="executor2">Executor 2</button>
+          </div>
+          <div class="form-group"><label>Alternate Attorney Name</label>
+            <input id="poa_name_two" name="poa_name_two" oninput="this.value=this.value.toUpperCase()" />
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Relation</label><input id="poa_relation_two" name="poa_relation_two" /></div>
+            <div class="form-group"><label>Date of Birth</label><input id="poa_dob_two" name="poa_dob_two" type="date" /></div>
+          </div>
+
+          <div class="checkbox-row small">
+            <input type="checkbox" id="poa_same_address_two" />
+            <label for="poa_same_address_two">Use my address (same as applicant)</label>
+          </div>
+          <div id="poa-address-fields-two" class="fade-section">
+            <div class="form-row">
+              <div class="form-group"><label>Street Number</label><input id="poa_street_number_two" name="poa_street_number_two" /></div>
+              <div class="form-group"><label>Street Name</label><input id="poa_street_name_two" name="poa_street_name_two" /></div>
+            </div>
+            <div class="form-group"><label>City</label><input id="poa_city_two" name="poa_city_two" /></div>
+            <div class="form-row">
+              <div class="form-group"><label>Province</label><input id="poa_province_two" name="poa_province_two" value="Ontario" readonly /></div>
+              <div class="form-group"><label>Postal Code</label><input id="poa_postal_code_two" name="poa_postal_code_two" pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" title="Format A1A 1A1" /></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 🏥 PERSONAL CARE POWER OF ATTORNEY -->
+    <!-- ========================================================= -->
+    <div class="form-section">
+      <h3>🏥 Power of Attorney for Personal Care</h3>
+      <p class="info-text">This allows someone to make decisions about your health and personal care.</p>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="include_poa_personal" />
+        <label for="include_poa_personal">Include Personal Care POA</label>
+      </div>
+
+      <div id="personal-poa-fields" class="hidden fade-section">
+        <div class="auto-fill-buttons">
+          <small>Auto-fill attorney from:</small>
+          <button type="button" class="btn-auto" data-poa="3" data-source="executor1">Executor 1</button>
+          <button type="button" class="btn-auto" data-poa="3" data-source="executor2">Executor 2</button>
+        </div>
+        <div class="form-group"><label>Attorney Name</label>
+          <input id="poa_name_three" name="poa_name_three" oninput="this.value=this.value.toUpperCase()" />
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Relation</label><input id="poa_relation_three" name="poa_relation_three" /></div>
+          <div class="form-group"><label>Date of Birth</label><input id="poa_dob_three" name="poa_dob_three" type="date" /></div>
+        </div>
+
+        <div class="form-section">
+          <h4>🏠 Attorney Address</h4>
+          <div class="checkbox-row small">
+            <input type="checkbox" id="poa_same_address_three" />
+            <label for="poa_same_address_three">Use my address (same as applicant)</label>
+          </div>
+          <div id="poa-address-fields-three" class="fade-section">
+            <div class="form-row">
+              <div class="form-group"><label>Street Number</label><input id="poa_street_number_three" name="poa_street_number_three" /></div>
+              <div class="form-group"><label>Street Name</label><input id="poa_street_name_three" name="poa_street_name_three" /></div>
+            </div>
+            <div class="form-group"><label>City</label><input id="poa_city_three" name="poa_city_three" /></div>
+            <div class="form-row">
+              <div class="form-group"><label>Province</label><input id="poa_province_three" name="poa_province_three" value="Ontario" readonly /></div>
+              <div class="form-group"><label>Postal Code</label><input id="poa_postal_code_three" name="poa_postal_code_three" pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" title="Format A1A 1A1" /></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="second_poa_personal" />
+          <label for="second_poa_personal">Include Alternate Personal Care Attorney</label>
+        </div>
+
+        <div id="alternate-personal-fields" class="hidden fade-section">
+          <div class="auto-fill-buttons">
+            <small>Auto-fill alternate from:</small>
+            <button type="button" class="btn-auto" data-poa="4" data-source="executor1">Executor 1</button>
+            <button type="button" class="btn-auto" data-poa="4" data-source="executor2">Executor 2</button>
+          </div>
+          <div class="form-group"><label>Alternate Attorney Name</label>
+            <input id="poa_name_four" name="poa_name_four" oninput="this.value=this.value.toUpperCase()" />
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Relation</label><input id="poa_relation_four" name="poa_relation_four" /></div>
+            <div class="form-group"><label>Date of Birth</label><input id="poa_dob_four" name="poa_dob_four" type="date" /></div>
+          </div>
+
+          <!-- NEW ADDRESS SECTION -->
+          <div class="form-section">
+            <h4>🏠 Alternate Attorney Address</h4>
+            <div class="checkbox-row small">
+              <input type="checkbox" id="poa_same_address_four" />
+              <label for="poa_same_address_four">Use my address (same as applicant)</label>
+            </div>
+            <div id="poa-address-fields-four" class="fade-section">
+              <div class="form-row">
+                <div class="form-group"><label>Street Number</label><input id="poa_street_number_four" name="poa_street_number_four" /></div>
+                <div class="form-group"><label>Street Name</label><input id="poa_street_name_four" name="poa_street_name_four" /></div>
+              </div>
+              <div class="form-group"><label>City</label><input id="poa_city_four" name="poa_city_four" /></div>
+              <div class="form-row">
+                <div class="form-group"><label>Province</label><input id="poa_province_four" name="poa_province_four" value="Ontario" readonly /></div>
+                <div class="form-group"><label>Postal Code</label><input id="poa_postal_code_four" name="poa_postal_code_four" pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" title="Format A1A 1A1" /></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" onclick="window.location.href='/step/3'">← Back</button>
+      <button type="submit" class="btn-primary">Save & Continue →</button>
+    </div>
+  </form>
+</div>
+
+<script>
+const fadeToggle=(id,show)=>{const el=document.getElementById(id);if(!el)return;show?el.classList.remove("hidden"):el.classList.add("hidden");};
+["include_poa","second_poa","include_poa_personal","second_poa_personal"].forEach(id=>{
+  const el=document.getElementById(id);if(!el)return;
+  el.addEventListener("change",()=>{const map={
+    include_poa:"general-poa-fields",second_poa:"alternate-poa-fields",
+    include_poa_personal:"personal-poa-fields",second_poa_personal:"alternate-personal-fields"
+  };fadeToggle(map[id],el.checked);});
+});
+document.querySelectorAll(".btn-auto").forEach(btn=>{
+  btn.addEventListener("click",async()=>{
+    const poaNum=btn.dataset.poa,src=btn.dataset.source;
+    const res=await fetch("/get-form-data");const data=await res.json();if(!data.success)return;
+    const ex=data.form_data.executors||{};
+    const f=src==="executor1"?{n:ex.exec1_name,r:ex.exec1_relation,d:ex.exec1_dob}:{n:ex.exec2_name,r:ex.exec2_relation,d:ex.exec2_dob};
+    const map={1:["poa_name_one","poa_relation_one","poa_dob_one"],2:["poa_name_two","poa_relation_two","poa_dob_two"],3:["poa_name_three","poa_relation_three","poa_dob_three"],4:["poa_name_four","poa_relation_four","poa_dob_four"]}[poaNum];
+    if(!f.n)return alert("Executor data not found");
+    document.getElementById(map[0]).value=f.n||"";document.getElementById(map[1]).value=f.r||"";document.getElementById(map[2]).value=f.d||"";flashHighlight(map[0]);
+  });
+});
+["poa_same_address_one","poa_same_address_two","poa_same_address_three","poa_same_address_four"].forEach(id=>{
+  const box=document.getElementById(id);if(!box)return;
+  box.addEventListener("change",async()=>{
+    const map={poa_same_address_one:"poa-address-fields-one",poa_same_address_two:"poa-address-fields-two",poa_same_address_three:"poa-address-fields-three",poa_same_address_four:"poa-address-fields-four"};
+    const cont=map[id];
+    if(box.checked){const r=await fetch("/get-form-data");const d=await r.json();const p=d.form_data.personal||{};fillAddr(cont,p);}else clearAddr(cont);
+  });
+});
+function fillAddr(cont,src){const c=document.getElementById(cont);if(!c)return;["street_number","street_name","city","postal_code"].forEach(k=>{const f=c.querySelector(`input[id*='${k}']`);if(f)f.value=src[k]||"";});flashHighlight(cont);}
+function clearAddr(cont){const c=document.getElementById(cont);if(!c)return;c.querySelectorAll("input:not([readonly])").forEach(i=>i.value="");}
+function flashHighlight(id){const e=document.getElementById(id);if(!e)return;e.classList.add("flash");setTimeout(()=>e.classList.remove("flash"),900);}
+document.getElementById("step4-form").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const data=Object.fromEntries(new FormData(e.target).entries());
+  ["include_poa","second_poa","include_poa_personal","second_poa_personal","poa_same_address_one","poa_same_address_two","poa_same_address_three","poa_same_address_four"].forEach(k=>data[k]=document.getElementById(k)?.checked||false);
+  const res=await fetch("/save-step/4",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)});
+  const j=await res.json();if(j.success)window.location.href="/step/5";else alert("Error: "+j.error);
+});
+</script>
+
+<style>
+.hidden{display:none!important;}
+.fade-section{opacity:0;transition:opacity .3s ease;}
+.fade-section:not(.hidden){opacity:1;}
+.flash{animation:flash-bg .8s;}
+@keyframes flash-bg{from{background:#dbeafe;}to{background:inherit;}}
+.checkbox-row{display:flex;align-items:center;gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:8px 12px;margin:10px 0;cursor:pointer;}
+.checkbox-row:hover{background:#f1f5f9;}
+.checkbox-row input[type=checkbox]{width:18px;height:18px;accent-color:#1e3a8a;cursor:pointer;}
+.checkbox-row label{cursor:pointer;user-select:none;color:#0f172a;font-weight:600;}
+.auto-fill-buttons{margin:8px 0;padding:6px;background:#f8fafc;border-radius:6px;}
+.btn-auto{background:#6c757d;color:#fff;border:none;border-radius:4px;padding:4px 8px;margin:0 4px;font-size:.8rem;cursor:pointer;}
+.btn-auto:hover{background:#5a6268;}
+.info-text{color:#555;font-size:.9rem;margin-bottom:.6rem;}
+.form-section h3,.form-section h4{color:#1e3a8a;}
+</style>
+{% endblock %}

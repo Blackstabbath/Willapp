@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="step-container">
+    <h2>Step 1: Personal Information</h2>
+    
+    <form id="step1-form" class="step-form">
+        <div class="form-section">
+            <h3>👤 Personal Details</h3>
+            
+            <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="name" required 
+                       oninput="this.value = this.value.toUpperCase()">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="gender">Gender *</label>
+                    <select id="gender" name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dob">Date of Birth *</label>
+                    <input type="date" id="dob" name="dob" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>🏠 Address</h3>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="street_number">Street Number *</label>
+                    <input type="text" id="street_number" name="street_number" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="street_name">Street Name *</label>
+                    <input type="text" id="street_name" name="street_name" required>
+                </div>
+            </div>
+
+            <!-- UPDATED: Regional Municipality moved ABOVE City with dropdown -->
+            <div class="form-group">
+                <label for="regional_municipality">Regional Municipality / District *</label>
+                <input type="text" id="regional_municipality" name="regional_municipality" 
+                       list="municipalityList" required
+                       placeholder="Type or select from options"
+                       autocomplete="off">
+                <datalist id="municipalityList">
+                    <option value="Regional Municipality of Durham">
+                    <option value="Regional Municipality of Halton">
+                    <option value="The District of Muskoka">
+                    <option value="Regional Municipality of Niagara">
+                    <option value="Regional Municipality of Peel">
+                    <option value="Regional Municipality of Waterloo">
+                    <option value="Regional Municipality of York">
+                    <option value="City of Toronto">
+                    <option value="Regional Municipality of Ottawa-Carleton">
+                    <option value="Regional Municipality of Hamilton-Wentworth">
+                </datalist>
+                <small class="form-help">
+                    Must be written in format: "Regional Municipality of XYZ" or "The District of XYZ"
+                </small>
+            </div>
+
+            <!-- UPDATED: City field with dynamic options based on municipality -->
+            <div class="form-group">
+                <label for="city">City *</label>
+                <input type="text" id="city" name="city" 
+                       list="cityList" required
+                       placeholder="Type or select from options"
+                       autocomplete="off">
+                <datalist id="cityList">
+                    <!-- Cities will be dynamically populated here -->
+                </datalist>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="province">Province *</label>
+                    <input type="text" id="province" name="province" value="Ontario" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label for="postal_code">Postal Code *</label>
+                    <input type="text" id="postal_code" name="postal_code" required 
+                           pattern="[A-Za-z][0-9][A-Za-z] [0-9][A-Za-z][0-9]" 
+                           title="Format: A1A 1A1"
+                           oninput="this.value = this.value.toUpperCase()">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3>📞 Contact Information</h3>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number *</label>
+                <input type="tel" id="phone" name="phone" required 
+                       pattern="[0-9]{10}" title="10-digit phone number">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn-primary">Save & Continue →</button>
+        </div>
+    </form>
+</div>
+
+<script>
+// Cities data based on regional municipality
+const citiesByRegion = {
+    "Regional Municipality of Durham": [
+        "City of Oshawa", "City of Pickering", "Municipality of Clarington",
+        "Town of Ajax", "Town of Whitby", "Township of Brock",
+        "Township of Scugog", "Township of Uxbridge"
+    ],
+    "Regional Municipality of Halton": [
+        "City of Burlington", "Town of Halton Hills", "Town of Milton", "Town of Oakville"
+    ],
+    "The District of Muskoka": [
+        "Town of Bracebridge", "Town of Gravenhurst", "Town of Huntsville",
+        "Township of Georgian Bay", "Township of Lake of Bays", "Township of Muskoka Lakes"
+    ],
+    "Regional Municipality of Niagara": [
+        "City of Niagara Falls", "City of Port Colborne", "City of St. Catharines",
+        "City of Thorold", "City of Welland", "Town of Fort Erie", "Town of Grimsby",
+        "Town of Lincoln", "Town of Niagara-on-the-Lake", "Town of Pelham",
+        "Township of Wainfleet", "Township of West Lincoln"
+    ],
+    "Regional Municipality of Peel": [
+        "City of Brampton", "City of Mississauga", "Town of Caledon"
+    ],
+    "Regional Municipality of Waterloo": [
+        "City of Cambridge", "City of Kitchener", "City of Waterloo",
+        "Township of North Dumfries", "Township of Wellesley",
+        "Township of Wilmot", "Township of Woolwich"
+    ],
+    "Regional Municipality of York": [
+        "City of Markham", "City of Richmond Hill", "City of Vaughan",
+        "Town of Aurora", "Town of East Gwillimbury", "Town of Georgina",
+        "Town of Newmarket", "Town of Whitchurch-Stouffville", "Township of King"
+    ],
+    "City of Toronto": [
+        "City of Toronto"
+    ],
+    "Regional Municipality of Ottawa-Carleton": [
+        "City of Ottawa"
+    ],
+    "Regional Municipality of Hamilton-Wentworth": [
+        "City of Hamilton"
+    ]
+};
+
+function updateCities() {
+    const selectedRegion = document.getElementById("regional_municipality").value;
+    const cityList = document.getElementById("cityList");
+    const cityInput = document.getElementById("city");
+    
+    // Clear previous options
+    cityList.innerHTML = "";
+
+    // Get cities for selected region
+    const cities = citiesByRegion[selectedRegion] || [];
+    
+    // Add cities to datalist
+    cities.forEach(city => {
+        const option = document.createElement("option");
+        option.value = city;
+        cityList.appendChild(option);
+    });
+
+    // Auto-fill city if there's only one option (like Toronto or Hamilton)
+    if (cities.length === 1) {
+        cityInput.value = cities[0];
+    } else if (cities.length === 0) {
+        // Clear city field when no matching region or custom region entered
+        cityInput.value = "";
+    }
+    // For multiple cities, keep current value if it matches one of the options
+}
+
+// Event listeners for regional municipality changes
+document.getElementById("regional_municipality").addEventListener("input", updateCities);
+document.getElementById("regional_municipality").addEventListener("change", updateCities);
+
+// Form submission
+document.getElementById('step1-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    try {
+        const response = await fetch('/save-step/1', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            window.location.href = '/step/2';
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        alert('Connection error: ' + error);
+    }
+});
+
+// Initialize on page load - if there's existing data, update cities
+document.addEventListener('DOMContentLoaded', function() {
+    const currentRegion = document.getElementById("regional_municipality").value;
+    if (currentRegion) {
+        updateCities();
+    }
+});
+</script>
+
+<style>
+.form-help {
+    color: #666;
+    font-size: 0.85em;
+    margin-top: 5px;
+    display: block;
+    font-style: italic;
+}
+
+/* Style for better datalist appearance */
+input[list] {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+}
+
+input[list]:focus {
+    background-color: #fff;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-group {
+    position: relative;
+}
+</style>
+{% endblock %}

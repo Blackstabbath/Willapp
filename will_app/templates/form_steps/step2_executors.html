@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="step-container">
+    <h2>Step 2: Executor Information</h2>
+
+    <form id="step2-form" class="step-form">
+        <!-- Primary Executor -->
+        <div class="form-section executor-card">
+            <h3>👤 Primary Executor</h3>
+
+            <div class="form-group">
+                <label for="exec1_name">Full Name *</label>
+                <input type="text" id="exec1_name" name="exec1_name" required
+                       oninput="this.value=this.value.toUpperCase()">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="exec1_relation">Relation to You *</label>
+                    <input type="text" id="exec1_relation" name="exec1_relation" required>
+                </div>
+                <div class="form-group">
+                    <label for="exec1_dob">Date of Birth *</label>
+                    <input type="date" id="exec1_dob" name="exec1_dob" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkbox -->
+        <div class="checkbox-row">
+            <input type="checkbox" id="include_second_executor" name="include_second_executor">
+            <label for="include_second_executor">Include a Second Executor</label>
+        </div>
+
+        <!-- Secondary Executor -->
+        <div id="second-executor-fields" class="executor-card hidden">
+            <h3>👥 Second Executor</h3>
+
+            <div class="form-group">
+                <label for="exec2_name">Full Name</label>
+                <input type="text" id="exec2_name" name="exec2_name"
+                       oninput="this.value=this.value.toUpperCase()">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="exec2_relation">Relation to You</label>
+                    <input type="text" id="exec2_relation" name="exec2_relation">
+                </div>
+                <div class="form-group">
+                    <label for="exec2_dob">Date of Birth</label>
+                    <input type="date" id="exec2_dob" name="exec2_dob">
+                </div>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="window.location.href='/step/1'">← Back</button>
+            <button type="submit" class="btn-primary">Save & Continue →</button>
+        </div>
+    </form>
+</div>
+
+<style>
+/* ---------- Layout Enhancements ---------- */
+.executor-card {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    background-color: #fafafa;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.3s ease-in-out;
+}
+.checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+.hidden {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+}
+.show {
+    opacity: 1;
+    max-height: 800px;
+}
+.form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.form-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+@media (max-width: 768px) {
+    .form-row { flex-direction: column; }
+}
+</style>
+
+<script>
+// Smooth toggle for second executor
+const chk = document.getElementById('include_second_executor');
+const section = document.getElementById('second-executor-fields');
+
+chk.addEventListener('change', () => {
+    if (chk.checked) {
+        section.classList.remove('hidden');
+        section.classList.add('show');
+    } else {
+        section.classList.remove('show');
+        section.classList.add('hidden');
+        // clear values
+        ['exec2_name','exec2_relation','exec2_dob'].forEach(id=>{
+            const el=document.getElementById(id);
+            if(el) el.value='';
+        });
+    }
+});
+
+// Submit handler
+document.getElementById('step2-form').addEventListener('submit', async e => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    data.include_second_executor = chk.checked;
+
+    try {
+        const res = await fetch('/save-step/2', {
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.success) {
+            window.location.href='/step/3';
+        } else {
+            alert('Error: '+result.error);
+        }
+    } catch(err){
+        alert('Connection error: '+err);
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absolute Wills - Smart Will Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/form-steps.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>Absolute Wills</h1>
+                <p>Smart Will Generator</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-step {% if session.get('current_step', 1) >= 1 %}active{% endif %}">
+                <div class="step-number">1</div>
+                <div class="step-label">Personal</div>
+            </div>
+            <div class="progress-connector {% if session.get('current_step', 1) > 1 %}active{% endif %}"></div>
+            
+            <div class="progress-step {% if session.get('current_step', 1) >= 2 %}active{% endif %}">
+                <div class="step-number">2</div>
+                <div class="step-label">Executors</div>
+            </div>
+            <div class="progress-connector {% if session.get('current_step', 1) > 2 %}active{% endif %}"></div>
+            
+            <div class="progress-step {% if session.get('current_step', 1) >= 3 %}active{% endif %}">
+                <div class="step-number">3</div>
+                <div class="step-label">Beneficiaries</div>
+            </div>
+            <div class="progress-connector {% if session.get('current_step', 1) > 3 %}active{% endif %}"></div>
+            
+            <div class="progress-step {% if session.get('current_step', 1) >= 4 %}active{% endif %}">
+                <div class="step-number">4</div>
+                <div class="step-label">POA</div>
+            </div>
+            <div class="progress-connector {% if session.get('current_step', 1) > 4 %}active{% endif %}"></div>
+            
+            <div class="progress-step {% if session.get('current_step', 1) >= 5 %}active{% endif %}">
+                <div class="step-number">5</div>
+                <div class="step-label">Review</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Absolute Wills. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/form-steps.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/autofill.js') }}"></script>
+</body>
+</html>

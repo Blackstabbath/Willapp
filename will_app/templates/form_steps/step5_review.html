@@ -1,0 +1,355 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="step-container">
+  <h2>Step 5: Review & Submit</h2>
+
+  <form id="step5-form" class="step-form">
+    <!-- ========================================================= -->
+    <!-- 📋 FINAL REVIEW -->
+    <!-- ========================================================= -->
+    <div class="form-section">
+      <h3>📋 Final Review</h3>
+      <p class="info-text">
+        Please review all information before submitting. You can go back to make
+        changes.
+      </p>
+      <div id="review-summary">
+        <div class="loading-text">Loading summary...</div>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 🔄 MIRROR WILL OPTIONS -->
+    <!-- ========================================================= -->
+    <div class="form-section">
+      <h3>🔄 Mirror Will Options</h3>
+      <p class="info-text">
+        Create a mirrored version for your spouse with roles reversed.
+      </p>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="mirror_will" name="mirror_will" />
+        <label for="mirror_will">Create Mirror Will for Spouse</label>
+      </div>
+
+      <small class="form-text" id="mirror-will-note">
+        This will create a separate will for your spouse where roles are swapped.
+        <strong>Requires spouse to be primary executor.</strong>
+      </small>
+
+      <div id="mirror-will-fields" class="hidden fade-section">
+        <div class="form-group">
+          <label for="mirror_notes">Custom Notes for Spouse's Will (Optional)</label>
+          <textarea
+            id="mirror_notes"
+            name="mirror_notes"
+            rows="3"
+            placeholder="Any specific changes for spouse's will, e.g., different wassiyat percentage, specific gifts..."
+          ></textarea>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="mirror_poa" name="mirror_poa" />
+          <label for="mirror_poa">Also Mirror General Power of Attorney</label>
+        </div>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="mirror_poa_personal" name="mirror_poa_personal" />
+          <label for="mirror_poa_personal">Also Mirror Personal Care Power of Attorney</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 📄 TERMS & CONDITIONS -->
+    <!-- ========================================================= -->
+    <div class="form-section">
+      <h3>📄 Terms & Conditions</h3>
+
+      <div class="checkbox-row" style="align-items:flex-start;">
+        <input type="checkbox" name="terms_agreement" id="termsCheckbox" required />
+        <label for="termsCheckbox">
+          I confirm that I have read and agree to the
+          <a href="#" onclick="toggleTerms();return false;" style="color:#3A6EA5;text-decoration:underline;">Terms and Conditions</a>.
+        </label>
+      </div>
+
+      <div id="termsContent" class="accordion-content hidden">
+        <p><strong>Last Updated: April 2025</strong></p>
+
+        <h3>1. Acceptance of Terms</h3>
+        <p>
+          By accessing and submitting information through this platform ("the Service"), you ("the User") agree to be bound by these Terms of Use, Privacy Policy, and Legal Disclaimer.
+        </p>
+        <p>
+          This platform is intended primarily for individuals of the Ahmadiyya Muslim faith. Individuals outside the Ahmadiyya Muslim community who wish to utilize this Service are requested to contact us at
+          <a href="mailto:info@absolutelaw.ca">info@absolutelaw.ca</a> to inquire about their will preparation.
+        </p>
+        <p>If you do not agree to these Terms, you must not use the Service.</p>
+
+        <h3>2. Purpose of Service</h3>
+        <p>
+          This platform offers an online tool designed to collect personal and estate information for the purpose of drafting wills according to the user's instructions.
+        </p>
+
+        <h3>3. User Responsibility</h3>
+        <p>
+          By using this Service, you expressly confirm that all information provided is accurate, complete, and submitted voluntarily at your own discretion.
+        </p>
+        <p>
+          You acknowledge that the resulting documents are generated solely based on your input, and that no legal advice, validation, or legal representation is provided by the Service.
+        </p>
+        <p>
+          Users requiring independent legal advice are advised to consult a qualified legal professional.
+        </p>
+
+        <h3>4. Security</h3>
+        <p>While we use industry-standard safeguards, no system is fully secure. You use this service at your own risk.</p>
+
+        <h3>5. Use of Data</h3>
+        <p>Your information is used solely for drafting your will, not for marketing purposes.</p>
+
+        <h3>6. No Legal Relationship</h3>
+        <p>
+          This platform is not a law firm and does not provide legal services or legal representation. It is strictly a form-based information collection tool designed to help users generate basic will documents based on their own input.
+        </p>
+        <p>
+          Use of this platform does not establish an attorney-client relationship between the user and any person, organization, or operator behind the Service. No communication through this platform shall be considered legal advice or create any duty of confidentiality or legal responsibility.
+        </p>
+        <p>
+          Users are encouraged to seek independent legal counsel if they require legal advice, complex estate planning, or have questions about the suitability or enforceability of the generated documents.
+        </p>
+
+        <h3>7. Contact</h3>
+        <p>For support, email: <a href="mailto:info@absolutelaw.ca">info@absolutelaw.ca</a></p>
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- SUBMIT -->
+    <!-- ========================================================= -->
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" onclick="window.location.href='/step/4'">← Back</button>
+      <button type="submit" class="btn-primary" id="submit-btn">Submit Will</button>
+    </div>
+  </form>
+</div>
+
+<script>
+// ============================
+// TOGGLES
+// ============================
+document.getElementById("mirror_will").addEventListener("change", () => {
+  document.getElementById("mirror-will-fields").classList.toggle("hidden", !mirror_will.checked);
+});
+function toggleTerms() {
+  document.getElementById("termsContent").classList.toggle("hidden");
+}
+
+// ============================
+// LOAD REVIEW SUMMARY
+// ============================
+function loadReviewSummary() {
+  fetch("/get-form-data")
+    .then(r => r.json())
+    .then(data => {
+      if (data.success) displayReviewSummary(data.form_data);
+      else document.getElementById("review-summary").innerHTML = '<div class="error">No data found</div>';
+    })
+    .catch(e => {
+      console.error("Error loading review data:", e);
+      document.getElementById("review-summary").innerHTML = '<div class="error">Error loading review data</div>';
+    });
+}
+
+// ============================
+// DISPLAY REVIEW SUMMARY
+// ============================
+function displayReviewSummary(data) {
+  const container = document.getElementById("review-summary");
+  
+  // Format address
+  const address = formatAddress(data);
+  
+  // Check mirror will eligibility
+  const canMirror = canCreateMirrorWill(data);
+  
+  let html = `
+    <div class="review-section">
+      <h4>👤 Personal Information</h4>
+      <div class="review-row"><strong>Name:</strong> ${data.name || 'Not provided'}</div>
+      <div class="review-row"><strong>Gender:</strong> ${data.gender || 'Not provided'}</div>
+      <div class="review-row"><strong>Date of Birth:</strong> ${data.dob || 'Not provided'}</div>
+      <div class="review-row"><strong>Address:</strong> ${address}</div>
+      <div class="review-row"><strong>Phone:</strong> ${data.phone || 'Not provided'}</div>
+      <div class="review-row"><strong>Email:</strong> ${data.email || 'Not provided'}</div>
+    </div>
+
+    <div class="review-section">
+      <h4>⚖️ Executor Information</h4>
+      <div class="review-row"><strong>Primary Executor:</strong> ${data.exec1_name || 'Not provided'} (${data.exec1_relation || 'Not provided'})</div>
+      <div class="review-row"><strong>Date of Birth:</strong> ${data.exec1_dob || 'Not provided'}</div>
+  `;
+  
+  if (data.include_second_executor === 'true' || data.include_second_executor === true) {
+    html += `
+      <div class="review-row"><strong>Secondary Executor:</strong> ${data.exec2_name || 'Not provided'} (${data.exec2_relation || 'Not provided'})</div>
+      <div class="review-row"><strong>Date of Birth:</strong> ${data.exec2_dob || 'Not provided'}</div>
+    `;
+  }
+  
+  html += `</div>`;
+  
+  // Beneficiaries section
+  if (data.beneficiaries && data.beneficiaries.length > 0) {
+    html += `<div class="review-section"><h4>🎁 Beneficiaries</h4>`;
+    data.beneficiaries.forEach((ben, index) => {
+      html += `<div class="review-row"><strong>${index + 1}. ${ben.name || 'Not provided'}:</strong> ${ben.relation || 'Not provided'} - Share: ${ben.share || '0'}%</div>`;
+    });
+    html += `</div>`;
+  }
+  
+  // POA section
+  if (data.include_poa === 'true' || data.include_poa === true) {
+    html += `
+      <div class="review-section">
+        <h4>📝 General Power of Attorney</h4>
+        <div class="review-row"><strong>Attorney:</strong> ${data.poa_name_one || 'Not provided'} (${data.poa_relation_one || 'Not provided'})</div>
+    `;
+    if (data.include_alternate_poa === 'true' || data.include_alternate_poa === true) {
+      html += `<div class="review-row"><strong>Alternate Attorney:</strong> ${data.poa_name_two || 'Not provided'} (${data.poa_relation_two || 'Not provided'})</div>`;
+    }
+    html += `</div>`;
+  }
+  
+  // Personal Care POA section
+  if (data.include_poa_personal_care === 'true' || data.include_poa_personal_care === true) {
+    html += `
+      <div class="review-section">
+        <h4>🏥 Personal Care Power of Attorney</h4>
+        <div class="review-row"><strong>Attorney:</strong> ${data.poa_name_three || 'Not provided'} (${data.poa_relation_three || 'Not provided'})</div>
+    `;
+    if (data.include_alternate_poa_personal_care === 'true' || data.include_alternate_poa_personal_care === true) {
+      html += `<div class="review-row"><strong>Alternate Attorney:</strong> ${data.poa_name_four || 'Not provided'} (${data.poa_relation_four || 'Not provided'})</div>`;
+    }
+    html += `</div>`;
+  }
+  
+  // Mirror will eligibility note
+  if (!canMirror) {
+    html += `<div class="review-section" style="border-left-color: #dc3545;">
+      <h4>⚠️ Mirror Will Note</h4>
+      <div class="review-row">Mirror will requires spouse to be primary executor.</div>
+    </div>`;
+  }
+  
+  container.innerHTML = html;
+}
+
+// ============================
+// FORMAT ADDRESS
+// ============================
+function formatAddress(data) {
+  const parts = [
+    data.street_number,
+    data.street_name,
+    data.city,
+    data.province,
+    data.postal_code
+  ].filter(part => part && part.trim() !== '');
+  
+  return parts.join(', ') || 'Not provided';
+}
+
+// ============================
+// CHECK MIRROR WILL ELIGIBILITY
+// ============================
+function canCreateMirrorWill(data) {
+  const spouseRelations = ['wife', 'husband', 'spouse'];
+  const executorRelation = (data.exec1_relation || '').toLowerCase();
+  return spouseRelations.some(relation => executorRelation.includes(relation));
+}
+
+// ============================
+// FORM SUBMISSION
+// ============================
+document.getElementById('step5-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const submitBtn = document.getElementById('submit-btn');
+  const originalText = submitBtn.textContent;
+  
+  // Disable button and show loading
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Submitting...';
+  
+  try {
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+    
+    const response = await fetch('/submit-complete-form', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      alert(result.message);
+      window.location.href = '/'; // Redirect to home or success page
+    } else {
+      alert('Error: ' + result.error);
+    }
+  } catch (error) {
+    alert('Connection error: ' + error);
+  } finally {
+    // Re-enable button
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+  }
+});
+
+// ============================
+// INITIALIZE ON LOAD
+// ============================
+document.addEventListener("DOMContentLoaded", loadReviewSummary);
+</script>
+
+<style>
+.hidden { display:none!important; }
+.fade-section { opacity:0; transition:opacity .3s ease; }
+.fade-section:not(.hidden) { opacity:1; }
+
+.checkbox-row {
+  display:flex; align-items:center; gap:10px;
+  background:#f8fafc; border:1px solid #e2e8f0;
+  border-radius:10px; padding:8px 12px; margin:10px 0;
+  cursor:pointer; transition:background .2s;
+}
+.checkbox-row:hover { background:#f1f5f9; }
+.checkbox-row input[type=checkbox] {
+  width:18px; height:18px; accent-color:#1e3a8a; cursor:pointer;
+}
+.checkbox-row label { cursor:pointer; user-select:none; color:#0f172a; font-weight:600; }
+
+.accordion-content {
+  margin-top:10px; padding:15px;
+  background:#f9fafb; border:1px solid #e5e7eb;
+  border-radius:8px; max-height:400px; overflow-y:auto;
+}
+.accordion-content h3 { color:#1e3a8a; margin-top:12px; }
+.info-text { color:#555; font-size:.9rem; margin-bottom:.6rem; }
+.form-text { color:#6c757d; font-size:.875rem; margin-top:4px; }
+.review-section {
+  margin-bottom:1.5rem; padding:1rem; background:#f8f9fa;
+  border-radius:4px; border-left:4px solid #3A6EA5;
+}
+.review-row { padding:.25rem 0; border-bottom:1px solid #e9ecef; }
+.review-row:last-child { border-bottom:none; }
+.loading-text { text-align:center; color:#6c757d; font-style:italic; }
+.error { color:#dc3545; text-align:center; }
+.btn-primary:disabled { opacity:.6; cursor:not-allowed; }
+</style>
+{% endblock %}

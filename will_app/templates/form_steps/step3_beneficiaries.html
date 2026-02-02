@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="step-container" data-step="3">
+    <h2>Step 3: Beneficiaries & Gifts</h2>
+    
+    <form id="step3-form" class="step-form">
+
+        <!-- Beneficiaries Section -->
+        <div class="form-section">
+            <div class="beneficiaries-header">
+                <h3>👨‍👩‍👧‍👦 Beneficiaries</h3>
+                <div class="checkbox-row small">
+                    <input type="checkbox" id="equal_shares" name="equal_shares">
+                    <label for="equal_shares">Equal Shares for All Beneficiaries</label>
+                </div>
+            </div>
+            <p class="info-text">
+                Add people who will inherit from your will. You can auto-fill from existing information.
+            </p>
+            
+            <div id="beneficiaries-container">
+                <!-- Beneficiary 1 -->
+                <div class="beneficiary-item" data-index="1">
+                    <h4>Beneficiary 1</h4>
+                    <div class="auto-fill-buttons">
+                        <small>Auto-fill from: </small>
+                        <button type="button" class="btn-auto-fill" data-source="executor1">Executor 1</button>
+                        <button type="button" class="btn-auto-fill" data-source="executor2">Executor 2</button>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="beneficiary_1_relation">Relation *</label>
+                            <input type="text" id="beneficiary_1_relation" name="beneficiary_1_relation" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="beneficiary_1_name">Full Name *</label>
+                            <input type="text" id="beneficiary_1_name" name="beneficiary_1_name" required
+                                   oninput="this.value=this.value.toUpperCase()">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="beneficiary_1_dob">Date of Birth *</label>
+                            <input type="date" id="beneficiary_1_dob" name="beneficiary_1_dob" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="beneficiary_1_share">Share % *</label>
+                            <input type="number" id="beneficiary_1_share" name="beneficiary_1_share"
+                                   step="0.01" min="0" max="100" value="100" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" id="add-beneficiary" class="btn-secondary">+ Add Another Beneficiary</button>
+        </div>
+
+        <!-- Wassiyat -->
+        <div class="form-section">
+            <h3>🕌 Wassiyat</h3>
+            <div class="checkbox-row">
+                <input type="checkbox" id="wassiyat_include" name="wassiyat_include">
+                <label for="wassiyat_include">Include Wassiyat (Islamic Will)</label>
+            </div>
+
+            <div id="wassiyat-fields" class="hidden">
+                <div class="form-group">
+                    <label for="wassiyat_percentage">Wassiyat Percentage</label>
+                    <select id="wassiyat_percentage" name="wassiyat_percentage">
+                        <option value="">Select Percentage</option>
+                        <option value="1/10 (10%)">1/10 (10%)</option>
+                        <option value="1/9 (11.11%)">1/9 (11.11%)</option>
+                        <option value="1/8 (12.5%)">1/8 (12.5%)</option>
+                        <option value="1/7 (14.29%)">1/7 (14.29%)</option>
+                        <option value="1/6 (16.67%)">1/6 (16.67%)</option>
+                        <option value="1/5 (20%)">1/5 (20%)</option>
+                        <option value="1/4 (25%)">1/4 (25%)</option>
+                        <option value="1/3 (33.33%)">1/3 (33.33%)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Specific Gift -->
+        <div class="form-section">
+            <h3>🎁 Specific Gifts</h3>
+            <div class="checkbox-row">
+                <input type="checkbox" id="specific_gift_include" name="specific_gift_include">
+                <label for="specific_gift_include">Include Specific Gift Clause</label>
+            </div>
+
+            <div id="specific-gift-fields" class="hidden">
+                <div class="form-group">
+                    <label for="specific_gift_text">Specific Gift Description</label>
+                    <textarea id="specific_gift_text" name="specific_gift_text" rows="4"
+                              placeholder="Example: My gold ring to my daughter Sarah..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="window.location.href='/step/2'">← Back</button>
+            <button type="submit" class="btn-primary">Save & Continue →</button>
+        </div>
+    </form>
+</div>
+
+<script>
+let beneficiaryCount = 1;
+
+// Toggle wassiyat
+document.getElementById('wassiyat_include').addEventListener('change', function(){
+    const f = document.getElementById('wassiyat-fields');
+    f.classList.toggle('hidden', !this.checked);
+    if(!this.checked) document.getElementById('wassiyat_percentage').value='';
+});
+
+// Toggle specific gift
+document.getElementById('specific_gift_include').addEventListener('change', function(){
+    const f = document.getElementById('specific-gift-fields');
+    f.classList.toggle('hidden', !this.checked);
+    if(!this.checked) document.getElementById('specific_gift_text').value='';
+});
+
+// Equal shares toggle
+const eqChk = document.getElementById('equal_shares');
+eqChk.checked = false; // start unchecked
+
+eqChk.addEventListener('change', () => {
+    const shareFields = document.querySelectorAll('input[name$="_share"]');
+    shareFields.forEach(field => {
+        field.disabled = eqChk.checked;
+        if(eqChk.checked) field.value = '';
+    });
+});
+
+// Add beneficiary
+document.getElementById('add-beneficiary').addEventListener('click', () => {
+    if(beneficiaryCount >= 10) return alert('Maximum 10 beneficiaries allowed');
+    beneficiaryCount++;
+    const c = document.getElementById('beneficiaries-container');
+    const b = document.createElement('div');
+    b.className='beneficiary-item';
+    b.dataset.index=beneficiaryCount;
+    b.innerHTML=`
+        <h4>Beneficiary ${beneficiaryCount}</h4>
+        <div class="auto-fill-buttons">
+            <small>Auto-fill from: </small>
+            <button type="button" class="btn-auto-fill" data-source="executor1">Executor 1</button>
+            <button type="button" class="btn-auto-fill" data-source="executor2">Executor 2</button>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="beneficiary_${beneficiaryCount}_relation">Relation</label>
+                <input type="text" id="beneficiary_${beneficiaryCount}_relation" name="beneficiary_${beneficiaryCount}_relation">
+            </div>
+            <div class="form-group">
+                <label for="beneficiary_${beneficiaryCount}_name">Full Name</label>
+                <input type="text" id="beneficiary_${beneficiaryCount}_name" name="beneficiary_${beneficiaryCount}_name"
+                       oninput="this.value=this.value.toUpperCase()">
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="beneficiary_${beneficiaryCount}_dob">Date of Birth</label>
+                <input type="date" id="beneficiary_${beneficiaryCount}_dob" name="beneficiary_${beneficiaryCount}_dob">
+            </div>
+            <div class="form-group">
+                <label for="beneficiary_${beneficiaryCount}_share">Share %</label>
+                <input type="number" id="beneficiary_${beneficiaryCount}_share" name="beneficiary_${beneficiaryCount}_share"
+                       step="0.01" min="0" max="100" ${eqChk.checked ? 'disabled' : ''}>
+            </div>
+        </div>
+        <button type="button" class="btn-remove-beneficiary" onclick="this.parentElement.remove()">Remove</button>
+    `;
+    c.appendChild(b);
+    setupAutoFillButtons();
+});
+
+// Auto-fill setup
+function setupAutoFillButtons(){
+    document.querySelectorAll('.btn-auto-fill').forEach(btn=>{
+        btn.onclick=()=>{
+            const src=btn.dataset.source;
+            const idx=btn.closest('.beneficiary-item').dataset.index;
+            fetch('/get-form-data').then(r=>r.json()).then(data=>{
+                if(!data.success) return;
+                const f=data.form_data;
+                const map={
+                    executor1:{name:f.exec1_name,relation:f.exec1_relation,dob:f.exec1_dob},
+                    executor2:{name:f.exec2_name,relation:f.exec2_relation,dob:f.exec2_dob}
+                }[src]||{};
+                if(!map.name) return;
+                document.getElementById(`beneficiary_${idx}_name`).value=map.name||'';
+                document.getElementById(`beneficiary_${idx}_relation`).value=map.relation||'';
+                document.getElementById(`beneficiary_${idx}_dob`).value=map.dob||'';
+            });
+        };
+    });
+}
+setupAutoFillButtons();
+
+// Submit
+document.getElementById('step3-form').addEventListener('submit', async e=>{
+    e.preventDefault();
+    const f=new FormData(e.target);
+    const d=Object.fromEntries(f);
+    d.equal_shares=eqChk.checked;
+    d.wassiyat_include=document.getElementById('wassiyat_include').checked;
+    d.specific_gift_include=document.getElementById('specific_gift_include').checked;
+
+    const res=await fetch('/save-step/3',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(d)
+    });
+    const j=await res.json();
+    if(j.success) window.location.href='/step/4';
+    else alert('Error: '+j.error);
+});
+</script>
+
+<style>
+.checkbox-row {
+  display:flex; align-items:center; gap:10px;
+  background:#f8fafc; border:1px solid #e2e8f0;
+  border-radius:10px; padding:8px 12px; margin:10px 0; cursor:pointer;
+}
+.checkbox-row.small { margin-left:auto; width:fit-content; }
+.checkbox-row:hover { background:#f1f5f9; }
+.checkbox-row input[type="checkbox"]{width:18px;height:18px;accent-color:#1e3a8a;cursor:pointer;}
+.checkbox-row label{cursor:pointer;user-select:none;color:#0f172a;font-weight:600;}
+
+.beneficiaries-header{display:flex;justify-content:space-between;align-items:center;}
+.beneficiary-item{border:1px solid #ddd;padding:1rem;margin-bottom:1rem;border-radius:4px;background:#f9f9f9;}
+.beneficiary-item h4{margin-bottom:.5rem;color:#3A6EA5;}
+.auto-fill-buttons{margin-bottom:1rem;}
+.btn-auto-fill{
+    background:#6c757d;color:white;border:none;padding:.25rem .5rem;
+    border-radius:3px;cursor:pointer;font-size:.8rem;margin:0 .25rem;
+}
+.btn-auto-fill:hover{background:#5a6268;}
+.btn-remove-beneficiary{
+    background:#dc3545;color:white;border:none;padding:.5rem 1rem;
+    border-radius:3px;cursor:pointer;font-size:.9rem;
+}
+.btn-remove-beneficiary:hover{background:#c82333;}
+.info-text{color:#666;font-size:.9rem;margin-bottom:1rem;}
+</style>
+{% endblock %}
